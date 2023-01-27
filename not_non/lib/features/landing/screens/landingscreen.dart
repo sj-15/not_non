@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:delayed_display/delayed_display.dart';
-import 'package:intl_phone_field/helpers.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:not_non/common/utils/utils.dart';
+
+import '../../auth/controller/auth_controller.dart';
 
 class LandingScreen extends ConsumerStatefulWidget {
+  static const routeName = '/landing-screen';
   const LandingScreen({super.key});
 
   @override
@@ -13,6 +16,7 @@ class LandingScreen extends ConsumerStatefulWidget {
 
 class _LandingScreenState extends ConsumerState<LandingScreen> {
   final phonecontroller = TextEditingController();
+  late String country;
   @override
   void dispose() {
     super.dispose();
@@ -21,7 +25,13 @@ class _LandingScreenState extends ConsumerState<LandingScreen> {
 
   void sendPhoneNumber() {
     String phoneNumber = phonecontroller.text.trim();
-    print('$phoneNumber');
+    if (country.isNotEmpty && phoneNumber.isNotEmpty) {
+      ref
+          .read(authControllerProvider)
+          .signInWithPhone(context, '$country$phoneNumber');
+    } else {
+      showSnackBar(context: context, content: 'Fill out all the fields');
+    }
   }
 
   @override
@@ -30,12 +40,6 @@ class _LandingScreenState extends ConsumerState<LandingScreen> {
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        // appBar: AppBar(
-        //   backgroundColor: const Color.fromARGB(255, 180, 236, 255),
-        //   elevation: 0,
-        //   title: Image.asset('assets/logowithouticon.png',
-        //       color: Colors.black, height: 100, width: 100),
-        // ),
         body: Container(
           width: double.infinity,
           color: const Color.fromARGB(255, 180, 236, 255),
@@ -86,6 +90,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen> {
                           width: size.width * 0.8,
                           child: IntlPhoneField(
                             keyboardType: TextInputType.number,
+                            onChanged: (value) => country = value.countryCode,
                             decoration: const InputDecoration(
                               hintText: 'phone number',
                             ),
@@ -117,10 +122,11 @@ class _LandingScreenState extends ConsumerState<LandingScreen> {
                 ),
               ),
               SizedBox(
-                height: size.height * 0.1,
+                height: size.height * 0.05,
               ),
               Container(
                 alignment: Alignment.topRight,
+                height: size.height * 0.3,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: const [
@@ -138,7 +144,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen> {
                         'Unknown',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 60,
+                          fontSize: 50,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -157,7 +163,7 @@ class _LandingScreenState extends ConsumerState<LandingScreen> {
                         'Interest',
                         style: TextStyle(
                           color: Colors.black,
-                          fontSize: 60,
+                          fontSize: 50,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
