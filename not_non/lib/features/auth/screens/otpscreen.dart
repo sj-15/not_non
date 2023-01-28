@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:not_non/common/utils/utils.dart';
+import 'package:not_non/features/auth/screens/userinformation.dart';
 
 import '../../../common/utils/colors.dart';
 
@@ -280,7 +282,12 @@ class OtpScreen extends ConsumerWidget {
                   width: size.width * 0.4,
                   child: TextButton(
                     onPressed: () {
-                      if (cnt == 6) {}
+                      if (cnt == 6) {
+                        Navigator.pushNamed(context, UserInformation.routeName);
+                      } else {
+                        showSnackBar(
+                            context: context, content: 'Timed out, $cnt');
+                      }
                     },
                     child: const Text(
                       'Show your interest',
