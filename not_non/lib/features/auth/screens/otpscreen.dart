@@ -1,23 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:not_non/common/utils/utils.dart';
-import 'package:not_non/features/auth/screens/userinformation.dart';
+import 'package:otp_text_field/otp_field.dart';
+import 'package:otp_text_field/otp_field_style.dart';
+import 'package:otp_text_field/style.dart';
 
 import '../../../common/utils/colors.dart';
+import '../controller/auth_controller.dart';
 
 class OtpScreen extends ConsumerWidget {
   static const routeName = '/otp-screen';
   final String verificationId;
-
-  const OtpScreen({
+  OtpScreen({
     Key? key,
     required this.verificationId,
   }) : super(key: key);
+  void verifyOTP(WidgetRef ref, BuildContext context, String userOTP) {
+    ref
+        .read(authControllerProvider)
+        .verifyOTP(context, verificationId, userOTP);
+  }
+
+  String otp = '';
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    int cnt = 0;
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -82,194 +89,20 @@ class OtpScreen extends ConsumerWidget {
               SizedBox(
                 height: size.height * 0.05,
               ),
-              Form(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      height: 48,
-                      width: 44,
-                      child: Card(
-                        elevation: 15,
-                        color: cardcolor,
-                        shadowColor: Colors.cyan[100],
-                        child: TextFormField(
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              cnt++;
-                              FocusScope.of(context).nextFocus();
-                            }
-                          },
-                          decoration: const InputDecoration(
-                            hintText: '0',
-                            hintStyle: TextStyle(
-                              color: Colors.black54,
-                            ),
-                          ),
-                          showCursor: false,
-                          style: Theme.of(context).textTheme.headline6,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(1),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 48,
-                      width: 44,
-                      child: Card(
-                        elevation: 15,
-                        color: cardcolor,
-                        shadowColor: Colors.cyan[100],
-                        child: TextFormField(
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              cnt++;
-                              FocusScope.of(context).nextFocus();
-                            }
-                          },
-                          decoration: const InputDecoration(
-                            hintText: '0',
-                            hintStyle: TextStyle(
-                              color: Colors.black54,
-                            ),
-                          ),
-                          showCursor: false,
-                          style: Theme.of(context).textTheme.headline6,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(1),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 48,
-                      width: 44,
-                      child: Card(
-                        color: cardcolor,
-                        elevation: 15,
-                        shadowColor: Colors.cyan[100],
-                        child: TextFormField(
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              cnt++;
-                              FocusScope.of(context).nextFocus();
-                            }
-                          },
-                          decoration: const InputDecoration(
-                            hintText: '0',
-                            hintStyle: TextStyle(
-                              color: Colors.black54,
-                            ),
-                          ),
-                          showCursor: false,
-                          style: Theme.of(context).textTheme.headline6,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(1),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 48,
-                      width: 44,
-                      child: Card(
-                        elevation: 15,
-                        color: cardcolor,
-                        shadowColor: Colors.cyan[100],
-                        child: TextFormField(
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              cnt++;
-                              FocusScope.of(context).nextFocus();
-                            }
-                          },
-                          decoration: const InputDecoration(
-                            hintText: '0',
-                            hintStyle: TextStyle(
-                              color: Colors.black54,
-                            ),
-                          ),
-                          showCursor: false,
-                          style: Theme.of(context).textTheme.headline6,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(1),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 48,
-                      width: 44,
-                      child: Card(
-                        elevation: 15,
-                        shadowColor: Colors.cyan[100],
-                        color: cardcolor,
-                        child: TextFormField(
-                          onChanged: (value) {
-                            if (value.length == 1) {
-                              cnt++;
-                              FocusScope.of(context).nextFocus();
-                            }
-                          },
-                          cursorColor: Colors.black,
-                          decoration: const InputDecoration(
-                            hintText: '0',
-                            hintStyle: TextStyle(
-                              color: Colors.black54,
-                            ),
-                          ),
-                          style: Theme.of(context).textTheme.headline6,
-                          showCursor: false,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(1),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 48,
-                      width: 44,
-                      child: Card(
-                        elevation: 15,
-                        shadowColor: Colors.cyan[100],
-                        color: cardcolor,
-                        child: TextFormField(
-                          onChanged: (value) => cnt++,
-                          decoration: const InputDecoration(
-                            hintText: '0',
-                            hintStyle: TextStyle(
-                              color: Colors.black54,
-                            ),
-                          ),
-                          style: Theme.of(context).textTheme.headline6,
-                          showCursor: false,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          inputFormatters: [
-                            LengthLimitingTextInputFormatter(1),
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+              OTPTextField(
+                length: 6,
+                width: double.infinity,
+                fieldWidth: 40,
+                outlineBorderRadius: 15,
+                otpFieldStyle: OtpFieldStyle(
+                  backgroundColor: const Color.fromARGB(255, 132, 255, 255),
                 ),
+                style: const TextStyle(fontSize: 17, color: Colors.black),
+                textFieldAlignment: MainAxisAlignment.spaceAround,
+                fieldStyle: FieldStyle.box,
+                onCompleted: (pin) {
+                  otp = pin;
+                },
               ),
               SizedBox(
                 height: size.height * 0.05,
@@ -278,26 +111,30 @@ class OtpScreen extends ConsumerWidget {
                 color: cardcolor,
                 elevation: 10,
                 child: SizedBox(
-                  height: size.height * 0.05,
-                  width: size.width * 0.4,
+                  height: 45,
+                  width: 160,
                   child: TextButton(
                     onPressed: () {
-                      if (cnt == 6) {
-                        Navigator.pushNamed(context, UserInformation.routeName);
-                      } else {
-                        showSnackBar(
-                            context: context, content: 'Timed out, $cnt');
-                      }
+                      showSnackBar(context: context, content: otp);
+                      verifyOTP(ref, context, otp);
                     },
-                    child: const Text(
-                      'Show your interest',
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
+                    child: Row(
+                      children: const [
+                        Text(
+                          'Show your interest',
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_right_alt_rounded,
+                          color: Colors.black,
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
+              )
             ],
           ),
         ),

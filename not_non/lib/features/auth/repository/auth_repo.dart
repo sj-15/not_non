@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:not_non/common/utils/utils.dart';
+import 'package:not_non/features/auth/screens/userinformation.dart';
 
 import '../screens/otpscreen.dart';
 
@@ -40,6 +41,27 @@ class AuthRepository {
       );
     } on FirebaseAuthException catch (e) {
       showSnackBar(context: context, content: e.toString());
+    }
+  }
+
+  void verifyOTP({
+    required BuildContext context,
+    required String verificationId,
+    required String userOTP,
+  }) async {
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: userOTP,
+      );
+      await auth.signInWithCredential(credential);
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        UserInformation.routeName,
+        (route) => false,
+      );
+    } on FirebaseAuthException catch (e) {
+      showSnackBar(context: context, content: e.message!);
     }
   }
 }
