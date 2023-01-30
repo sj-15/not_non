@@ -18,11 +18,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         ),
       );
     case UserInformation.routeName:
-      final verificationId = settings.arguments as String;
       return MaterialPageRoute(
-        builder: (context) => OtpScreen(
-          verificationId: verificationId,
-        ),
+        builder: (context) => const UserInformation(),
       );
 
     default:

@@ -50,16 +50,16 @@ class AuthRepository {
     required String userOTP,
   }) async {
     try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: verificationId,
-        smsCode: userOTP,
-      );
-      await auth.signInWithCredential(credential);
       Navigator.pushNamedAndRemoveUntil(
         context,
         UserInformation.routeName,
         (route) => false,
       );
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: userOTP,
+      );
+      await auth.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       showSnackBar(context: context, content: e.message!);
     }

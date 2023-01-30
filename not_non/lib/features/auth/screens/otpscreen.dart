@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:not_non/common/utils/utils.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
@@ -8,6 +7,7 @@ import 'package:otp_text_field/style.dart';
 import '../../../common/utils/colors.dart';
 import '../controller/auth_controller.dart';
 
+// ignore: must_be_immutable
 class OtpScreen extends ConsumerWidget {
   static const routeName = '/otp-screen';
   final String verificationId;
@@ -21,7 +21,7 @@ class OtpScreen extends ConsumerWidget {
         .verifyOTP(context, verificationId, userOTP);
   }
 
-  String otp = '';
+  String? string;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -100,9 +100,7 @@ class OtpScreen extends ConsumerWidget {
                 style: const TextStyle(fontSize: 17, color: Colors.black),
                 textFieldAlignment: MainAxisAlignment.spaceAround,
                 fieldStyle: FieldStyle.box,
-                onCompleted: (pin) {
-                  otp = pin;
-                },
+                onChanged: (value) => string = value,
               ),
               SizedBox(
                 height: size.height * 0.05,
@@ -115,8 +113,7 @@ class OtpScreen extends ConsumerWidget {
                   width: 160,
                   child: TextButton(
                     onPressed: () {
-                      showSnackBar(context: context, content: otp);
-                      verifyOTP(ref, context, otp);
+                      verifyOTP(ref, context, string!.trim());
                     },
                     child: Row(
                       children: const [

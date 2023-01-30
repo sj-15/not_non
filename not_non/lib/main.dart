@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:not_non/features/auth/screens/userinformation.dart';
 import 'package:not_non/firebase_options.dart';
 import 'package:not_non/router.dart';
 import 'features/landing/screens/landingscreen.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: const LandingScreen(),
+      home: const UserInformation(),
     );
   }
 }
