@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
 
 const textcolor = Colors.white;
-final cardcolor = Colors.cyanAccent[100];
+final logocolor = Colors.purpleAccent[700];
+const cardcolor = Colors.blueGrey;

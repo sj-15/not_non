@@ -66,24 +66,11 @@ class _LandingScreenState extends ConsumerState<LandingScreen> {
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'notNON',
-                    style: TextStyle(
-                      color: textcolor,
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Image.asset(
-                    'assets/logowithouticon.png',
-                    color: cardcolor,
-                    height: size.height * 0.05,
-                    width: size.width * 0.3,
-                  ),
-                ],
+              Image.asset(
+                'assets/logowithouticon.png',
+                color: logocolor,
+                height: size.height * 0.05,
+                width: size.width * 0.3,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,

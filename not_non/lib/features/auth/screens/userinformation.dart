@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:not_non/common/utils/colors.dart';
+import 'package:rive/rive.dart';
+
+import '../../../common/components/rive_asset.dart';
+import '../../../common/utils/rive_utils.dart';
+import '../../../common/widgets/animatedbar.dart';
 
 class UserInformation extends StatefulWidget {
   static const routeName = '/userinformation-screen';
@@ -10,49 +15,44 @@ class UserInformation extends StatefulWidget {
 }
 
 class _UserInformationState extends State<UserInformation> {
+  RiveAsset selectedBottonNav = bottomNavs.first;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: RadialGradient(
-              center: Alignment.topCenter,
-              stops: [0.6, 0.6],
-              colors: <Color>[
-                Color(0xFFBC92FF),
-                Color(0xFFFFFFFF),
-              ],
-              focal: Alignment.topCenter,
-              radius: 1,
-            ),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Profile',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Image.asset(
+                'assets/logowithouticon.png',
+                color: logocolor,
+                height: 30,
+                width: size.width * 0.3,
+              ),
+            ],
           ),
+        ),
+        body: Container(
+          height: size.height * 0.8,
+          width: double.infinity,
           padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Profile',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Image.asset(
-                    'assets/logowithouticon.png',
-                    color: cardcolor,
-                    height: 30,
-                    width: size.width * 0.3,
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 90,
+              SizedBox(
+                height: size.height * 0.02,
               ),
               const Text(
                 '!NON_id',
@@ -67,10 +67,10 @@ class _UserInformationState extends State<UserInformation> {
                   borderRadius: BorderRadius.circular(80),
                 ),
                 shadowColor: Colors.black87,
-                child: CircleAvatar(
+                child: const CircleAvatar(
                   radius: 50,
                   backgroundColor: cardcolor,
-                  backgroundImage: const AssetImage('assets/avatar1.jpg'),
+                  backgroundImage: AssetImage('assets/avatars/avatar1.jpg'),
                 ),
               ),
               const SizedBox(
@@ -78,6 +78,9 @@ class _UserInformationState extends State<UserInformation> {
               ),
               Card(
                 elevation: 10,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
                 child: SizedBox(
                   width: size.width * 0.8,
                   height: size.height * 0.3,
@@ -120,6 +123,12 @@ class _UserInformationState extends State<UserInformation> {
             ],
           ),
         ),
+        bottomNavigationBar: BottomAppBar(
+          elevation: 0,
+          color: Colors.transparent,
+          padding: const EdgeInsets.all(12),
+          child: menubar(context),
+        ),
       ),
     );
   }
@@ -151,7 +160,7 @@ class _UserInformationState extends State<UserInformation> {
           Text(
             text,
             style: const TextStyle(
-              color: Colors.black45,
+              color: Colors.white60,
               fontSize: 15,
             ),
             textAlign: TextAlign.center,
@@ -162,11 +171,15 @@ class _UserInformationState extends State<UserInformation> {
   }
 
   Widget options(BuildContext context, text, link) {
+    final size = MediaQuery.of(context).size;
     return Card(
       elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: SizedBox(
-        height: 60,
-        width: 320,
+        height: size.height * 0.08,
+        width: size.width * 0.8,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Row(
@@ -190,6 +203,65 @@ class _UserInformationState extends State<UserInformation> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget menubar(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Container(
+      // duration: const Duration(milliseconds: 200),
+      height: size.height * 0.07,
+      width: size.width * 0.8,
+      decoration: BoxDecoration(
+        color: Colors.blueGrey,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          ...List.generate(
+            bottomNavs.length,
+            (index) => GestureDetector(
+              onTap: () {
+                bottomNavs[index].input!.change(true);
+                if (bottomNavs[index] != selectedBottonNav) {
+                  setState(() {
+                    selectedBottonNav = bottomNavs[index];
+                  });
+                }
+                Future.delayed(const Duration(seconds: 1), () {
+                  bottomNavs[index].input!.change(false);
+                });
+              },
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedBar(isActive: bottomNavs[index] == selectedBottonNav),
+                  SizedBox(
+                    height: 36,
+                    width: 36,
+                    child: Opacity(
+                      opacity: bottomNavs[index] == selectedBottonNav ? 1 : 0.5,
+                      child: RiveAnimation.asset(
+                        bottomNavs.first.src,
+                        artboard: bottomNavs[index].atboard,
+                        onInit: (artboard) {
+                          StateMachineController controller =
+                              RiveUtils.getRiveController(artboard,
+                                  stateMachineName:
+                                      bottomNavs[index].stateMachineName);
+                          bottomNavs[index].input =
+                              controller.findSMI('active') as SMIBool;
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

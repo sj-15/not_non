@@ -49,7 +49,7 @@ class OtpScreen extends ConsumerWidget {
             children: [
               Image.asset(
                 'assets/logowithouticon.png',
-                color: cardcolor,
+                color: logocolor,
                 height: size.height * 0.05,
                 width: size.width * 0.3,
               ),
@@ -95,7 +95,7 @@ class OtpScreen extends ConsumerWidget {
                 fieldWidth: 40,
                 outlineBorderRadius: 15,
                 otpFieldStyle: OtpFieldStyle(
-                  backgroundColor: const Color.fromARGB(255, 132, 255, 255),
+                  backgroundColor: const Color(0Xff607D8B),
                 ),
                 style: const TextStyle(fontSize: 17, color: Colors.black),
                 textFieldAlignment: MainAxisAlignment.spaceAround,
