@@ -1,11 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:not_non/features/auth/screens/userinformation.dart';
+import 'package:not_non/features/auth/controller/auth_controller.dart';
 import 'package:not_non/firebase_options.dart';
 import 'package:not_non/router.dart';
-import 'features/auth/screens/otpscreen.dart';
+import 'common/widgets/error.dart';
+import 'common/widgets/loader.dart';
 import 'features/landing/screens/landingscreen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'features/screens/mobilelayoutscreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,12 +18,12 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '!non',
@@ -28,7 +31,19 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       onGenerateRoute: (settings) => generateRoute(settings),
-      home: const UserInformation(),
+      home: ref.watch(userDataAuthProvider).when(
+          data: (user) {
+            if (user == null) {
+              return const LandingScreen();
+            }
+            return const MobileLayoutScreen();
+          },
+          error: (err, trace) {
+            return ErrorScreen(
+              error: err.toString(),
+            );
+          },
+          loading: () => const Loader()),
     );
   }
 }
