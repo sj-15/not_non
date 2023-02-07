@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:not_non/features/screens/editprofile.dart';
-import 'package:not_non/features/screens/favorite.dart';
+import 'package:not_non/features/screens/mobilelayoutscreen.dart';
 import 'package:not_non/features/screens/search.dart';
 import 'package:not_non/features/screens/setting.dart';
 import 'package:rive/rive.dart';
@@ -9,30 +9,23 @@ import '../../common/components/rive_asset.dart';
 import '../../common/utils/colors.dart';
 import '../../common/utils/rive_utils.dart';
 import '../../common/widgets/animatedbar.dart';
-import '../widget/clubwidget.dart';
-import '../widget/knwonwidget.dart';
 
-class MobileLayoutScreen extends StatefulWidget {
-  static const routeName = 'mobile-layout';
-  final String notid;
-  const MobileLayoutScreen({
-    Key? key,
-    required this.notid,
-  }) : super(key: key);
+class FavoriteScreen extends StatefulWidget {
+  static const routeName = '/favorite-screen';
+
+  const FavoriteScreen({super.key});
 
   @override
-  State<MobileLayoutScreen> createState() => _MobileLayoutScreenState();
+  State<FavoriteScreen> createState() => _FavoriteScreenState();
 }
 
-class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
-  RiveAsset selectedBottonNav = bottomNavs[0];
+class _FavoriteScreenState extends State<FavoriteScreen> {
+  RiveAsset selectedBottonNav = bottomNavs[2];
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      extendBody: true,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0,
@@ -40,54 +33,17 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.search),
+            const Text(
+              'Favorite',
+              style: TextStyle(
+                color: Colors.white,
+              ),
             ),
             Image.asset(
               'assets/logowithouticon.png',
               color: logocolor,
               height: size.height * 0.05,
               width: size.width * 0.2,
-            ),
-          ],
-        ),
-      ),
-      body: DefaultTabController(
-        length: 2,
-        initialIndex: 0,
-        child: Column(
-          children: [
-            Container(
-              color: Colors.black,
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: TabBar(
-                isScrollable: true,
-                indicatorColor: logocolor,
-                indicatorWeight: 4,
-                labelStyle:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                unselectedLabelStyle: const TextStyle(color: Colors.white38),
-                tabs: const [
-                  Tab(
-                    text: 'Known',
-                  ),
-                  Tab(
-                    text: 'Club',
-                  ),
-                ],
-              ),
-            ),
-            const Flexible(
-              child: TabBarView(
-                children: [
-                  //tab1 individual chat
-                  KnwonsWidget(),
-                  //tab2 Club
-                  ClubsWidget(),
-                ],
-              ),
             ),
           ],
         ),

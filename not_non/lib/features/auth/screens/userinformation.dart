@@ -2,16 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:not_non/common/utils/notid.dart';
-import 'package:not_non/common/widgets/error.dart';
 
 import '../../../common/utils/colors.dart';
-import '../../../common/widgets/loader.dart';
 import '../controller/auth_controller.dart';
 
 class UserInformation extends ConsumerStatefulWidget {
   static const routeName = '/user_information';
-  const UserInformation({super.key});
+  final String notid;
+  const UserInformation({
+    Key? key,
+    required this.notid,
+  }) : super(key: key);
 
   @override
   ConsumerState<UserInformation> createState() => _UserInformationState();
@@ -19,40 +20,25 @@ class UserInformation extends ConsumerStatefulWidget {
 
 class _UserInformationState extends ConsumerState<UserInformation> {
   final TextEditingController aboutsController = TextEditingController();
-
-  String notid = '';
+  final TextEditingController interestController = TextEditingController();
   File? image;
 
   void storeUserData() async {
     String about = aboutsController.text.trim();
     ref
         .read(authControllerProvider)
-        .saveUserDatatoFirebase(context, notid, image, about, 0, 0);
+        .saveUserDatatoFirebase(context, widget.notid, image, about, 0, 0);
   }
 
   @override
   void dispose() {
     super.dispose();
     aboutsController.dispose();
+    interestController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(userDataAuthProvider).when(
-          data: (user) {
-            if (user == null) {
-              notid = notnonid();
-            } else {
-              notid = user.notid;
-            }
-          },
-          error: (err, trace) {
-            return ErrorScreen(
-              error: err.toString(),
-            );
-          },
-          loading: () => const Loader(),
-        );
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -123,7 +109,7 @@ class _UserInformationState extends ConsumerState<UserInformation> {
                       ),
                     ),
                     TextSpan(
-                      text: notid,
+                      text: widget.notid,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -135,6 +121,9 @@ class _UserInformationState extends ConsumerState<UserInformation> {
               SizedBox(
                 height: size.height * 0.1,
               ),
+              // const Card(
+
+              // ),
               Card(
                 color: Colors.white,
                 elevation: 15,

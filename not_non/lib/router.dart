@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:not_non/common/utils/notid.dart';
+import 'package:not_non/features/screens/editprofile.dart';
+import 'package:not_non/features/screens/mobilelayoutscreen.dart';
+import 'package:not_non/features/screens/search.dart';
 import 'common/widgets/error.dart';
 import 'features/auth/screens/otpscreen.dart';
 import 'features/auth/screens/userinformation.dart';
 import 'features/landing/screens/landingscreen.dart';
+import 'features/screens/favorite.dart';
+import 'features/screens/setting.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -19,9 +25,32 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       );
     case UserInformation.routeName:
       return MaterialPageRoute(
-        builder: (context) => const UserInformation(),
+        builder: (context) => UserInformation(
+          notid: notnonid(),
+        ),
       );
-
+    case MobileLayoutScreen.routeName:
+      return MaterialPageRoute(
+        builder: (context) => const MobileLayoutScreen(
+          notid: '',
+        ),
+      );
+    case SearchScreen.routeName:
+      return MaterialPageRoute(
+        builder: (context) => const SearchScreen(),
+      );
+    case FavoriteScreen.routeName:
+      return MaterialPageRoute(
+        builder: (context) => const FavoriteScreen(),
+      );
+    case EditProfile.routeName:
+      return MaterialPageRoute(
+        builder: (context) => const EditProfile(),
+      );
+    case SettingScreen.routeName:
+      return MaterialPageRoute(
+        builder: (context) => const SettingScreen(),
+      );
     default:
       return MaterialPageRoute(
         builder: (contex) => const Scaffold(

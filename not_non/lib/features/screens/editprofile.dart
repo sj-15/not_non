@@ -1,44 +1,59 @@
-import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:not_non/common/utils/colors.dart';
-import 'package:not_non/features/auth/controller/auth_controller.dart';
+import 'package:not_non/common/widgets/error.dart';
+import 'package:not_non/features/screens/favorite.dart';
+import 'package:not_non/features/screens/mobilelayoutscreen.dart';
+import 'package:not_non/features/screens/search.dart';
+import 'package:not_non/features/screens/setting.dart';
+
 import 'package:rive/rive.dart';
 
 import '../../../common/components/rive_asset.dart';
-import '../../../common/utils/notid.dart';
 import '../../../common/utils/rive_utils.dart';
 import '../../../common/widgets/animatedbar.dart';
 import '../../../common/widgets/buttons.dart';
 import '../../../common/widgets/options.dart';
+import '../../model/user_model.dart';
 
 class EditProfile extends ConsumerStatefulWidget {
   static const routeName = '/EditProfile-screen';
-  const EditProfile({super.key});
+
+  const EditProfile({
+    Key? key,
+  }) : super(key: key);
 
   @override
   ConsumerState<EditProfile> createState() => _EditProfileState();
 }
 
 class _EditProfileState extends ConsumerState<EditProfile> {
-  RiveAsset selectedBottonNav = bottomNavs.first;
-  File? image;
-  String notid = notnonid();
+  RiveAsset selectedBottonNav = bottomNavs[3];
+  UserModel? user;
 
-  void storeUserData() async {
-    ref
-        .read(authControllerProvider)
-        .saveUserDatatoFirebase(context, notid, image, 'About me', 0, 0);
+  void userdata() async {
+    var firebaseUser = FirebaseAuth.instance.currentUser;
+    var snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(firebaseUser!.uid)
+        .get();
+    if (snapshot.data() != null) user = UserModel?.fromMap(snapshot.data()!);
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    userdata();
+    if (user == null) {
+      return const ErrorScreen(error: 'null');
+    }
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
           elevation: 0,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +97,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                       ),
                     ),
                     TextSpan(
-                      text: notid,
+                      text: user!.notid,
                       style: const TextStyle(
                         color: Colors.black,
                         fontSize: 24,
@@ -97,21 +112,11 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                   borderRadius: BorderRadius.circular(80),
                 ),
                 shadowColor: Colors.black87,
-                child: image == null
-                    ? const CircleAvatar(
-                        radius: 50,
-                        backgroundColor: cardcolor,
-                        backgroundImage: AssetImage(
-                          'assets/avatars/avatar1.jpg',
-                        ),
-                      )
-                    : const CircleAvatar(
-                        radius: 50,
-                        backgroundColor: cardcolor,
-                        backgroundImage: AssetImage(
-                          'assets/avatars/avatar1.jpg',
-                        ),
-                      ),
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: cardcolor,
+                  backgroundImage: AssetImage(user!.profilePic),
+                ),
               ),
               const SizedBox(
                 height: 5,
@@ -129,16 +134,16 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Status',
-                          style: TextStyle(
+                        Text(
+                          user!.uid,
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 20,
                           ),
                         ),
-                        const Text(
-                          'Call me Engineer and lets build life with you..',
-                          style: TextStyle(
+                        Text(
+                          user!.abouts,
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 20,
                           ),
@@ -146,8 +151,8 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            elvbuttons(0, 'Known'),
-                            elvbuttons(0, 'Unknown'),
+                            elvbuttons(user!.known, 'Known'),
+                            elvbuttons(user!.unknown, 'Unknown'),
                           ],
                         ),
                       ],
@@ -180,7 +185,7 @@ class _EditProfileState extends ConsumerState<EditProfile> {
       height: size.height * 0.07,
       width: size.width * 0.8,
       decoration: BoxDecoration(
-        color: Colors.blueGrey,
+        color: Colors.black.withOpacity(0.8),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
@@ -200,30 +205,47 @@ class _EditProfileState extends ConsumerState<EditProfile> {
                   bottomNavs[index].input!.change(false);
                 });
               },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AnimatedBar(isActive: bottomNavs[index] == selectedBottonNav),
-                  SizedBox(
-                    height: 36,
-                    width: 36,
-                    child: Opacity(
-                      opacity: bottomNavs[index] == selectedBottonNav ? 1 : 0.5,
-                      child: RiveAnimation.asset(
-                        bottomNavs.first.src,
-                        artboard: bottomNavs[index].atboard,
-                        onInit: (artboard) {
-                          StateMachineController controller =
-                              RiveUtils.getRiveController(artboard,
-                                  stateMachineName:
-                                      bottomNavs[index].stateMachineName);
-                          bottomNavs[index].input =
-                              controller.findSMI('active') as SMIBool;
-                        },
+              child: InkWell(
+                onTap: () {
+                  if (index == 0) {
+                    Navigator.pushNamed(context, MobileLayoutScreen.routeName);
+                  } else if (index == 1) {
+                    Navigator.pushNamed(context, SearchScreen.routeName);
+                  } else if (index == 2) {
+                    Navigator.pushNamed(context, FavoriteScreen.routeName);
+                  } else if (index == 3) {
+                    Navigator.pushNamed(context, EditProfile.routeName);
+                  } else if (index == 4) {
+                    Navigator.pushNamed(context, SettingScreen.routeName);
+                  }
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AnimatedBar(
+                        isActive: bottomNavs[index] == selectedBottonNav),
+                    SizedBox(
+                      height: 36,
+                      width: 36,
+                      child: Opacity(
+                        opacity:
+                            bottomNavs[index] == selectedBottonNav ? 1 : 0.5,
+                        child: RiveAnimation.asset(
+                          bottomNavs.first.src,
+                          artboard: bottomNavs[index].atboard,
+                          onInit: (artboard) {
+                            StateMachineController controller =
+                                RiveUtils.getRiveController(artboard,
+                                    stateMachineName:
+                                        bottomNavs[index].stateMachineName);
+                            bottomNavs[index].input =
+                                controller.findSMI('active') as SMIBool;
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

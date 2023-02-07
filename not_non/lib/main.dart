@@ -36,7 +36,10 @@ class MyApp extends ConsumerWidget {
             if (user == null) {
               return const LandingScreen();
             }
-            return const MobileLayoutScreen();
+            return MobileLayoutScreen(
+              notid: user.notid,
+            );
+            // return const EditProfile();
           },
           error: (err, trace) {
             return ErrorScreen(
