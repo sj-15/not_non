@@ -20,21 +20,29 @@ class UserInformation extends ConsumerStatefulWidget {
 
 class _UserInformationState extends ConsumerState<UserInformation> {
   final TextEditingController aboutsController = TextEditingController();
-  final TextEditingController interestController = TextEditingController();
+  late TextEditingController interestController;
   File? image;
+  String topic = "";
+  List<String> interests = [];
+  int index = 0;
 
-  void storeUserData() async {
-    String about = aboutsController.text.trim();
-    ref
-        .read(authControllerProvider)
-        .saveUserDatatoFirebase(context, widget.notid, image, about, 0, 0);
+  @override
+  void initState() {
+    interestController = TextEditingController();
+    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     aboutsController.dispose();
     interestController.dispose();
+    super.dispose();
+  }
+
+  void storeUserData() async {
+    String about = aboutsController.text.trim();
+    ref.read(authControllerProvider).saveUserDatatoFirebase(
+        context, widget.notid, image, about, 0, 0, interests);
   }
 
   @override
@@ -51,21 +59,20 @@ class _UserInformationState extends ConsumerState<UserInformation> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
+                TextButton(
                   onPressed: storeUserData,
-                  icon: const Icon(
-                    Icons.done,
-                    size: 30,
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(color: Colors.white),
                   ),
-                  color: Colors.blue,
                 ),
               ],
             ),
           ),
         ),
         body: Container(
-          height: double.infinity,
-          width: double.infinity,
+          // height: double.infinity,
+          // width: double.infinity,
           padding: const EdgeInsets.only(left: 30, right: 30, top: 15),
           decoration: const BoxDecoration(
             gradient: RadialGradient(
@@ -121,9 +128,95 @@ class _UserInformationState extends ConsumerState<UserInformation> {
               SizedBox(
                 height: size.height * 0.1,
               ),
-              // const Card(
-
-              // ),
+              Card(
+                color: Colors.white,
+                elevation: 15,
+                shadowColor: Colors.white60,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: SizedBox(
+                  width: size.width * 0.85,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20, bottom: 10),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: size.width * 0.6,
+                              color: Colors.white,
+                              child: TextField(
+                                onChanged: (s) => setState(() {
+                                  topic = s;
+                                }),
+                                decoration: const InputDecoration(
+                                  hintText: 'Enter your topic',
+                                ),
+                                maxLength: 25,
+                                maxLines: 1,
+                                controller: interestController,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  interests.insert(
+                                      index, interestController.text.trim());
+                                  index++;
+                                  interestController.text = "";
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.done,
+                                size: 30,
+                              ),
+                              color: Colors.blue,
+                            ),
+                          ],
+                        ),
+                        for (String s in interests)
+                          Row(
+                            children: [
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                s,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 25,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    interests.remove(s);
+                                    index--;
+                                  });
+                                },
+                                child: const Text(
+                                  'X',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: size.height * 0.1,
+              ),
               Card(
                 color: Colors.white,
                 elevation: 15,

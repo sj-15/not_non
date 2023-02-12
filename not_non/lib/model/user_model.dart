@@ -8,6 +8,7 @@ class UserModel {
   final int known;
   final int unknown;
   final List<String> groupId;
+  final List<String> interests;
 
   UserModel({
     required this.uid,
@@ -19,6 +20,7 @@ class UserModel {
     required this.known,
     required this.unknown,
     required this.groupId,
+    required this.interests,
   });
 
   Map<String, dynamic> toMap() {
@@ -32,6 +34,7 @@ class UserModel {
       'known': known,
       'unknown': unknown,
       'groupId': groupId,
+      'interests': interests,
     };
   }
 
@@ -46,6 +49,7 @@ class UserModel {
       known: map['known'] ?? 0,
       unknown: map['unknown'] ?? 0,
       groupId: List<String>.from(map['groupId']),
+      interests: List<String>.from(map['interests']),
     );
   }
 }

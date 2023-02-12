@@ -39,8 +39,14 @@ class AuthController {
     );
   }
 
-  void saveUserDatatoFirebase(BuildContext context, String notid,
-      File? profilePic, String abouts, int known, int unknown) {
+  void saveUserDatatoFirebase(
+      BuildContext context,
+      String notid,
+      File? profilePic,
+      String abouts,
+      int known,
+      int unknown,
+      List<String> interests) {
     authRepository.saveUserDatatoFirebase(
       notid: notid,
       profilePic: profilePic,
@@ -49,6 +55,7 @@ class AuthController {
       unknown: unknown,
       ref: ref,
       context: context,
+      interests: interests,
     );
   }
 }

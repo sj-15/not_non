@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:not_non/features/auth/controller/auth_controller.dart';
+import 'package:not_non/features/auth/screens/userinformation.dart';
 import 'package:not_non/firebase_options.dart';
 import 'package:not_non/router.dart';
 import 'common/widgets/error.dart';
@@ -39,7 +40,9 @@ class MyApp extends ConsumerWidget {
             return MobileLayoutScreen(
               notid: user.notid,
             );
-            // return const EditProfile();
+            // return const UserInformation(
+            //   notid: '',
+            // );
           },
           error: (err, trace) {
             return ErrorScreen(

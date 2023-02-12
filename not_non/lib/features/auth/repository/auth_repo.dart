@@ -94,6 +94,7 @@ class AuthRepository {
     required int unknown,
     required ProviderRef ref,
     required BuildContext context,
+    required List<String> interests,
   }) async {
     try {
       String uid = auth.currentUser!.uid;
@@ -116,6 +117,7 @@ class AuthRepository {
         known: known,
         unknown: unknown,
         groupId: [],
+        interests: interests,
       );
       await firestore.collection('users').doc(uid).set(user.toMap());
     } catch (e) {

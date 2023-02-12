@@ -9,8 +9,8 @@ import '../../common/components/rive_asset.dart';
 import '../../common/utils/colors.dart';
 import '../../common/utils/rive_utils.dart';
 import '../../common/widgets/animatedbar.dart';
-import '../widget/clubwidget.dart';
-import '../widget/knwonwidget.dart';
+import '../chat/widget/clubwidget.dart';
+import '../chat/widget/knwonwidget.dart';
 
 class MobileLayoutScreen extends StatefulWidget {
   static const routeName = 'mobile-layout';
@@ -129,19 +129,19 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
                 });
               },
               child: InkWell(
-                onTap: () {
-                  if (index == 0) {
-                    Navigator.pushNamed(context, MobileLayoutScreen.routeName);
-                  } else if (index == 1) {
-                    Navigator.pushNamed(context, SearchScreen.routeName);
-                  } else if (index == 2) {
-                    Navigator.pushNamed(context, FavoriteScreen.routeName);
-                  } else if (index == 3) {
-                    Navigator.pushNamed(context, EditProfile.routeName);
-                  } else if (index == 4) {
-                    Navigator.pushNamed(context, SettingScreen.routeName);
-                  }
-                },
+                // onTap: () {
+                //   if (index == 0) {
+                //     Navigator.pushNamed(context, MobileLayoutScreen.routeName);
+                //   } else if (index == 1) {
+                //     Navigator.pushNamed(context, SearchScreen.routeName);
+                //   } else if (index == 2) {
+                //     Navigator.pushNamed(context, FavoriteScreen.routeName);
+                //   } else if (index == 3) {
+                //     Navigator.pushNamed(context, EditProfile.routeName);
+                //   } else if (index == 4) {
+                //     Navigator.pushNamed(context, SettingScreen.routeName);
+                //   }
+                // },
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
