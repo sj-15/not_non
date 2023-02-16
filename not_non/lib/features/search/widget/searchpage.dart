@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:not_non/features/search/widget/recomended_user.dart';
 
 import '../../../common/widgets/error.dart';
 import '../../../common/widgets/loader.dart';
-import '../../../model/user_model.dart';
 import '../controller/search_controller.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
@@ -15,104 +15,82 @@ class SearchPage extends ConsumerStatefulWidget {
 }
 
 class _SearchPageState extends ConsumerState<SearchPage> {
+  final _controller = TextEditingController();
+  bool _searching = false;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: ref.watch(searchControllerProvider).when(
-            data: (interestsList) => ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: interestsList!.interests.length,
-              itemBuilder: (context, index) {
-                String interest = interestsList.interests[index];
-                return riverpod.Consumer(
-                  builder: (context, ref, child) {
-                    final controller =
-                        ref.watch(getInterestsControllerProvider);
-                    return FutureBuilder<List<InterestsModel?>>(
-                      future: controller.getInterest(
-                          interest.toLowerCase(), context),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                            child: Loader(),
-                          );
-                        }
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: Text('Error: ${snapshot.error}'),
-                          );
-                        }
-                        final users = snapshot.data ?? [];
-                        final filteredUsers = users
-                            .where((user) => user!.interests
-                                .contains(interest.toLowerCase()))
-                            .toList();
-                        if (filteredUsers.isEmpty) {
-                          return Center(
-                            child:
-                                Text('No users found with $interest in common'),
-                          );
-                        }
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: filteredUsers.length,
-                          itemBuilder: (context, index) {
-                            final user = filteredUsers[index];
-                            final matches = user!.interests
-                                .where((topic) =>
-                                    topic.toLowerCase() ==
-                                    interest.toLowerCase())
-                                .toString();
-                            return RecommendedUser(
-                              notid: user.notid,
-                              profilePic: user.profilePic,
-                              interests: user.interests,
-                              matches: matches,
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
-              },
+      child: Column(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.95,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              border: Border.all(
+                color: Colors.white,
+                width: 3,
+              ),
+              borderRadius: BorderRadius.circular(180),
             ),
-            error: (error, stackTrace) => ErrorScreen(error: error.toString()),
-            loading: () => const Loader(),
+            height: 60,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      style: const TextStyle(color: Colors.white),
+                      cursorColor: Colors.white,
+                      controller: _controller,
+                      decoration: InputDecoration(
+                        hintText: 'Search',
+                        border: InputBorder.none,
+                        hintStyle:
+                            TextStyle(color: Colors.white.withOpacity(0.6)),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 35,
+                    width: 2,
+                    color: Colors.white30,
+                  ),
+                  const SizedBox(
+                    width: 15,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        _searching = true;
+                      });
+                    },
+                    child: const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-    );
-  }
-}
-
-class RecommendedUser extends StatelessWidget {
-  final String notid;
-  final String profilePic;
-  final List<String> interests;
-  final String matches;
-
-  const RecommendedUser({
-    super.key,
-    required this.notid,
-    required this.profilePic,
-    required this.interests,
-    required this.matches,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: AssetImage(profilePic),
-        radius: 30,
-      ),
-      title: Text('!$notid'),
-      subtitle: Text('$matches matches'),
-      trailing: IconButton(
-        icon: const Icon(Icons.switch_account_rounded),
-        onPressed: () {},
+          _searching == false
+              ? ref.watch(searchControllerProvider).when(
+                    data: (interestsList) => ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: interestsList!.interests.length,
+                      itemBuilder: (context, index) {
+                        String interest = interestsList.interests[index];
+                        return RecomendedUsers(interest: interest);
+                      },
+                    ),
+                    error: (error, stackTrace) =>
+                        ErrorScreen(error: error.toString()),
+                    loading: () => const Loader(),
+                  )
+              : RecomendedUsers(
+                  interest: _controller.text.trim().toLowerCase()),
+        ],
       ),
     );
   }

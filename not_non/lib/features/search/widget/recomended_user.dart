@@ -1,33 +1,92 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:not_non/features/search/controller/search_controller.dart';
-import 'package:not_non/model/user_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import '../../../common/widgets/loader.dart';
+import '../../../model/user_model.dart';
+import '../controller/search_controller.dart';
 
-class RecomendedUser extends ConsumerWidget {
-  static const routeName = '/recomended-user';
-  final String topic;
-
-  const RecomendedUser({super.key, required this.topic});
+class RecomendedUsers extends StatelessWidget {
+  final String interest;
+  const RecomendedUsers({super.key, required this.interest});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // int index = 0;
-    List<InterestsModel?> interestedUser = [];
-    ref
-        .watch(getInterestsControllerProvider)
-        .getInterest(topic, context)
-        .then((value) {
-      interestedUser = value;
-    });
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          for (var user in interestedUser)
-            Text(
-              user!.notid,
-              style: const TextStyle(color: Colors.red),
-            ),
-        ],
+  Widget build(BuildContext context) {
+    return riverpod.Consumer(
+      builder: (context, ref, child) {
+        final controller = ref.watch(getInterestsControllerProvider);
+        return FutureBuilder<List<InterestsModel?>>(
+          future: controller.getInterest(interest.toLowerCase(), context),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: Loader(),
+              );
+            }
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            }
+            final users = snapshot.data ?? [];
+            final filteredUsers = users
+                .where(
+                    (user) => user!.interests.contains(interest.toLowerCase()))
+                .toList();
+            if (filteredUsers.isEmpty) {
+              return Center(
+                child: Text('No users found with $interest in common'),
+              );
+            }
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: filteredUsers.length,
+              itemBuilder: (context, index) {
+                final user = filteredUsers[index];
+                final matches = user!.interests
+                    .where((topic) =>
+                        topic.toLowerCase() == interest.toLowerCase())
+                    .toString();
+                return RecommendedUser(
+                  notid: user.notid,
+                  profilePic: user.profilePic,
+                  interests: user.interests,
+                  matches: matches,
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class RecommendedUser extends StatelessWidget {
+  final String notid;
+  final String profilePic;
+  final List<String> interests;
+  final String matches;
+
+  const RecommendedUser({
+    super.key,
+    required this.notid,
+    required this.profilePic,
+    required this.interests,
+    required this.matches,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundImage: AssetImage(profilePic),
+        radius: 30,
+      ),
+      title: Text('!$notid'),
+      subtitle: Text('$matches matches'),
+      trailing: IconButton(
+        icon: const Icon(Icons.message_outlined),
+        onPressed: () {},
       ),
     );
   }

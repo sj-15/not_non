@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:not_non/features/chat/widget/chatbot.dart';
 import 'package:not_non/features/screens/editprofile.dart';
 import 'package:not_non/features/screens/favorite.dart';
 import 'package:not_non/features/screens/search.dart';
@@ -24,8 +25,28 @@ class MobileLayoutScreen extends StatefulWidget {
   State<MobileLayoutScreen> createState() => _MobileLayoutScreenState();
 }
 
-class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
+class _MobileLayoutScreenState extends State<MobileLayoutScreen>
+    with SingleTickerProviderStateMixin {
   RiveAsset selectedBottonNav = bottomNavs[0];
+  late TabController _tabController;
+  bool showBottomNavigation = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 0);
+    _tabController.addListener(() {
+      if (_tabController.index < 2) {
+        setState(() {
+          showBottomNavigation = true;
+        });
+      } else {
+        setState(() {
+          showBottomNavigation = false;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +75,7 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
         ),
       ),
       body: DefaultTabController(
-        length: 2,
+        length: 3,
         initialIndex: 0,
         child: Column(
           children: [
@@ -66,6 +87,7 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
                 isScrollable: true,
                 indicatorColor: logocolor,
                 indicatorWeight: 4,
+                controller: _tabController,
                 labelStyle:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 unselectedLabelStyle: const TextStyle(color: Colors.white38),
@@ -76,28 +98,36 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
                   Tab(
                     text: 'Club',
                   ),
+                  Tab(
+                    text: ('ChatBot'),
+                  ),
                 ],
               ),
             ),
-            const Flexible(
+            Flexible(
               child: TabBarView(
-                children: [
+                controller: _tabController,
+                children: const [
                   //tab1 individual chat
                   KnwonsWidget(),
                   //tab2 Club
                   ClubsWidget(),
+                  //tab3 chatbot
+                  ChatBotScreen(),
                 ],
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 0,
-        color: Colors.transparent,
-        padding: const EdgeInsets.all(12),
-        child: menubar(context),
-      ),
+      bottomNavigationBar: showBottomNavigation == false
+          ? null
+          : BottomAppBar(
+              elevation: 0,
+              color: Colors.transparent,
+              padding: const EdgeInsets.all(12),
+              child: menubar(context),
+            ),
     );
   }
 
