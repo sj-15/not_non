@@ -49,6 +49,7 @@ dependencies:
   otp_text_field: ^1.1.3
   font_awesome_flutter: ^10.3.0
   rive: ^0.10.1
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:

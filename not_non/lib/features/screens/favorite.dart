@@ -10,16 +10,16 @@ import '../../common/utils/colors.dart';
 import '../../common/utils/rive_utils.dart';
 import '../../common/widgets/animatedbar.dart';
 
-class FavoriteScreen extends StatefulWidget {
-  static const routeName = '/favorite-screen';
+class NotificationScreen extends StatefulWidget {
+  static const routeName = '/notification-screen';
 
-  const FavoriteScreen({super.key});
+  const NotificationScreen({super.key});
 
   @override
-  State<FavoriteScreen> createState() => _FavoriteScreenState();
+  State<NotificationScreen> createState() => _NotificationScreenState();
 }
 
-class _FavoriteScreenState extends State<FavoriteScreen> {
+class _NotificationScreenState extends State<NotificationScreen> {
   RiveAsset selectedBottonNav = bottomNavs[2];
 
   @override
@@ -34,7 +34,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Text(
-              'Favorite',
+              'Notifications',
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -83,48 +83,50 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                 Future.delayed(const Duration(seconds: 1), () {
                   bottomNavs[index].input!.change(false);
                 });
+                switch (bottomNavs[index].title) {
+                  case 'Chat':
+                    Navigator.pushNamed(context, MobileLayoutScreen.routeName);
+                    break;
+                  case 'Search':
+                    Navigator.pushNamed(context, SearchScreen.routeName);
+                    break;
+                  case 'Bell':
+                    Navigator.pushNamed(context, NotificationScreen.routeName);
+                    break;
+                  case 'User':
+                    Navigator.pushNamed(context, EditProfile.routeName);
+                    break;
+                  case 'Settings':
+                    Navigator.pushNamed(context, SettingScreen.routeName);
+                    break;
+                  default:
+                    break;
+                }
               },
-              child: InkWell(
-                // onTap: () {
-                //   if (index == 0) {
-                //     Navigator.pushNamed(context, MobileLayoutScreen.routeName);
-                //   } else if (index == 1) {
-                //     Navigator.pushNamed(context, SearchScreen.routeName);
-                //   } else if (index == 2) {
-                //     Navigator.pushNamed(context, FavoriteScreen.routeName);
-                //   } else if (index == 3) {
-                //     Navigator.pushNamed(context, EditProfile.routeName);
-                //   } else if (index == 4) {
-                //     Navigator.pushNamed(context, SettingScreen.routeName);
-                //   }
-                // },
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AnimatedBar(
-                        isActive: bottomNavs[index] == selectedBottonNav),
-                    SizedBox(
-                      height: 36,
-                      width: 36,
-                      child: Opacity(
-                        opacity:
-                            bottomNavs[index] == selectedBottonNav ? 1 : 0.5,
-                        child: RiveAnimation.asset(
-                          bottomNavs.first.src,
-                          artboard: bottomNavs[index].atboard,
-                          onInit: (artboard) {
-                            StateMachineController controller =
-                                RiveUtils.getRiveController(artboard,
-                                    stateMachineName:
-                                        bottomNavs[index].stateMachineName);
-                            bottomNavs[index].input =
-                                controller.findSMI('active') as SMIBool;
-                          },
-                        ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedBar(isActive: bottomNavs[index] == selectedBottonNav),
+                  SizedBox(
+                    height: 36,
+                    width: 36,
+                    child: Opacity(
+                      opacity: bottomNavs[index] == selectedBottonNav ? 1 : 0.5,
+                      child: RiveAnimation.asset(
+                        bottomNavs.first.src,
+                        artboard: bottomNavs[index].atboard,
+                        onInit: (artboard) {
+                          StateMachineController controller =
+                              RiveUtils.getRiveController(artboard,
+                                  stateMachineName:
+                                      bottomNavs[index].stateMachineName);
+                          bottomNavs[index].input =
+                              controller.findSMI('active') as SMIBool;
+                        },
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

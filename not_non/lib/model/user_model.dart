@@ -53,3 +53,31 @@ class UserModel {
     );
   }
 }
+
+class InterestsModel {
+  final String notid;
+  final String profilePic;
+  final List<String> interests;
+
+  InterestsModel({
+    required this.notid,
+    required this.profilePic,
+    required this.interests,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'notid': notid,
+      'profilePic': profilePic,
+      'interests': interests,
+    };
+  }
+
+  factory InterestsModel.fromMap(Map<String, dynamic> map) {
+    return InterestsModel(
+      notid: map['notid'] ?? '',
+      profilePic: map['profilePic'] ?? '',
+      interests: List<String>.from(map['interests']),
+    );
+  }
+}

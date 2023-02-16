@@ -39,9 +39,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => const SearchScreen(),
       );
-    case FavoriteScreen.routeName:
+    case NotificationScreen.routeName:
       return MaterialPageRoute(
-        builder: (context) => const FavoriteScreen(),
+        builder: (context) => const NotificationScreen(),
       );
     case EditProfile.routeName:
       return MaterialPageRoute(
@@ -51,6 +51,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) => const SettingScreen(),
       );
+
     default:
       return MaterialPageRoute(
         builder: (contex) => const Scaffold(
