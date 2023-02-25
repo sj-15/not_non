@@ -15,6 +15,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  // await dotenv.load(fileName: "token.env");
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -36,9 +37,7 @@ class MyApp extends ConsumerWidget {
             if (user == null) {
               return const LandingScreen();
             }
-            return MobileLayoutScreen(
-              notid: user.notid,
-            );
+            return const MobileLayoutScreen();
           },
           error: (err, trace) {
             return ErrorScreen(

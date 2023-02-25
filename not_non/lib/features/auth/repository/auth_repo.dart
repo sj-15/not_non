@@ -19,7 +19,7 @@ final authRepositoryProvider = Provider(
   ),
 );
 
-String notid = '';
+String notId = '';
 
 class AuthRepository {
   final FirebaseAuth auth;
@@ -34,9 +34,9 @@ class AuthRepository {
     UserModel? user;
     if (userData.data() != null) {
       user = UserModel.fromMap(userData.data()!);
-      notid = user.notid;
+      notId = user.notid;
     } else {
-      notid = notnonid();
+      notId = notnonid();
     }
     return user;
   }
@@ -102,9 +102,7 @@ class AuthRepository {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => MobileLayoutScreen(
-              notid: notid,
-            ),
+            builder: (context) => const MobileLayoutScreen(),
           ),
           ((route) => false));
       var user = UserModel(

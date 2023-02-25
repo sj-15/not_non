@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import '../../../common/utils/colors.dart';
 import '../../../common/widgets/loader.dart';
 import '../../../model/user_model.dart';
 import '../controller/search_controller.dart';
@@ -82,7 +83,27 @@ class RecommendedUser extends StatelessWidget {
         backgroundImage: AssetImage(profilePic),
         radius: 30,
       ),
-      title: Text('!$notid'),
+      title: Text.rich(
+        TextSpan(
+          children: [
+            TextSpan(
+              text: '!',
+              style: TextStyle(
+                color: logocolor,
+                fontWeight: FontWeight.w900,
+                fontSize: 20,
+              ),
+            ),
+            TextSpan(
+              text: notid,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+              ),
+            ),
+          ],
+        ),
+      ),
       subtitle: Text('$matches matches'),
       trailing: IconButton(
         icon: const Icon(Icons.message_outlined),

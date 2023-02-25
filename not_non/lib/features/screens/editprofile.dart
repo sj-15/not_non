@@ -60,115 +60,123 @@ class _EditProfileState extends ConsumerState<EditProfile> {
             ],
           ),
         ),
-        body: riverpod.Consumer(
-          builder: (context, ref, child) {
-            final asyncValue = ref.watch(userDataAuthProvider);
-            return asyncValue.when(
-              data: (user) {
-                return Container(
-                  height: size.height * 0.8,
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: size.height * 0.02,
-                      ),
-                      Text.rich(
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text: '!',
-                              style: TextStyle(
-                                color: logocolor,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 36,
+        body: SingleChildScrollView(
+          child: riverpod.Consumer(
+            builder: (context, ref, child) {
+              final asyncValue = ref.watch(userDataAuthProvider);
+              return asyncValue.when(
+                data: (user) {
+                  return user != null
+                      ? Container(
+                          height: size.height * 0.8,
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: size.height * 0.02,
                               ),
-                            ),
-                            TextSpan(
-                              text: user!.notid,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 24,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Card(
-                        elevation: 15,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(80),
-                        ),
-                        shadowColor: Colors.black87,
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundColor: cardcolor,
-                          backgroundImage: AssetImage(user.profilePic),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Card(
-                        elevation: 10,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: SizedBox(
-                          width: size.width * 0.8,
-                          height: size.height * 0.3,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 18.0, vertical: 8),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'Online',
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Text(
-                                  user.abouts,
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                              Text.rich(
+                                TextSpan(
                                   children: [
-                                    elvbuttons(user.known, 'Known'),
-                                    elvbuttons(user.unknown, 'Unknown'),
+                                    TextSpan(
+                                      text: '!',
+                                      style: TextStyle(
+                                        color: logocolor,
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 36,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: user.notid,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 24,
+                                      ),
+                                    ),
                                   ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              Card(
+                                elevation: 15,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(80),
+                                ),
+                                shadowColor: Colors.black87,
+                                child: CircleAvatar(
+                                  radius: 50,
+                                  backgroundColor: cardcolor,
+                                  backgroundImage: AssetImage(user.profilePic),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Card(
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: SizedBox(
+                                  width: size.width * 0.8,
+                                  height: size.height * 0.3,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 18.0, vertical: 8),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'Online',
+                                          style: TextStyle(
+                                            color: Colors.green,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                        Text(
+                                          user.abouts,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            elvbuttons(user.known, 'Known'),
+                                            elvbuttons(user.unknown, 'Unknown'),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: size.height * 0.02,
+                              ),
+                              options(context, 'Your interest', ''),
+                              options(context, 'Settings', ''),
+                            ],
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        height: size.height * 0.02,
-                      ),
-                      options(context, 'Your interest', ''),
-                      options(context, 'Settings', ''),
-                    ],
-                  ),
-                );
-              },
-              error: (Object error, StackTrace stackTrace) {
-                return ErrorScreen(error: error.toString());
-              },
-              loading: () {
-                return const Loader();
-              },
-            );
-          },
+                        )
+                      : const Text(
+                          'Something Wrong',
+                          style: TextStyle(color: Colors.red),
+                        );
+                },
+                error: (Object error, StackTrace stackTrace) {
+                  return ErrorScreen(error: error.toString());
+                },
+                loading: () {
+                  return const Loader();
+                },
+              );
+            },
+          ),
         ),
         bottomNavigationBar: BottomAppBar(
           elevation: 0,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget options(BuildContext context, text, link) {
+Widget options(BuildContext context, String text, String link) {
   final size = MediaQuery.of(context).size;
   return Card(
     elevation: 5,

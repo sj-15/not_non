@@ -15,10 +15,9 @@ import '../chat/widget/knwonwidget.dart';
 
 class MobileLayoutScreen extends StatefulWidget {
   static const routeName = 'mobile-layout';
-  final String notid;
+  // final String notid;
   const MobileLayoutScreen({
     Key? key,
-    required this.notid,
   }) : super(key: key);
 
   @override
@@ -52,7 +51,6 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       extendBody: true,
       appBar: AppBar(
         automaticallyImplyLeading: false,

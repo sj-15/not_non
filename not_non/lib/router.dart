@@ -24,16 +24,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
         ),
       );
     case UserInformation.routeName:
+      final notid = notnonid();
       return MaterialPageRoute(
         builder: (context) => UserInformation(
-          notid: notnonid(),
+          notid: notid,
         ),
       );
     case MobileLayoutScreen.routeName:
       return MaterialPageRoute(
-        builder: (context) => const MobileLayoutScreen(
-          notid: '',
-        ),
+        builder: (context) => const MobileLayoutScreen(),
       );
     case SearchScreen.routeName:
       return MaterialPageRoute(
