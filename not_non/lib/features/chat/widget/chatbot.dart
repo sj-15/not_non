@@ -1,13 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:not_non/common/utils/utils.dart';
+import 'package:not_non/features/chat/services/api_service.dart';
+import 'package:not_non/model/chatmodel.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 
 import '../../../common/utils/chatmessage.dart';
-import '../../../common/widgets/threedots.dart';
+import '../../../common/utils/url_check.dart';
 
 class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({super.key});
@@ -20,48 +22,55 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   late TextEditingController _controller;
   final List<ChatMessage> _messages = [];
 
-  late OpenAI? openAI;
-  late StreamSubscription _subscription;
   bool _isTyping = false;
   @override
   void initState() {
     _controller = TextEditingController();
-    openAI = OpenAI.instance.build(
-        token: "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",
-        baseOption: HttpSetup(receiveTimeout: 150000));
+
     super.initState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    openAI?.close();
     super.dispose();
   }
 
   void _sendMessage() async {
-    if (_controller.text.isEmpty) return;
-    ChatMessage message = ChatMessage(text: _controller.text, sender: "user");
-    setState(() {
-      _messages.insert(0, message);
-      _isTyping = true;
-    });
-    _controller.clear();
-    final request =
-        CompleteText(prompt: message.text, model: kTranslateModelV3);
-    await Future.delayed(
-      const Duration(
-        seconds: 1,
-      ),
-    );
-
-    final response = await openAI!.onCompleteText(request: request);
-    Vx.log(response!.choices[0].text);
-    insertNewData(response.choices[0].text);
+    if (_isTyping) {
+      showSnackBar(
+        context: context,
+        content: "You cant send multiple messages at a time",
+      );
+      return;
+    }
+    if (_controller.text.isEmpty) {
+      showSnackBar(context: context, content: 'Please type a message');
+      return;
+    }
+    try {
+      ChatMessage message = ChatMessage(text: _controller.text, sender: "user");
+      if (isUrlPresent(message.text)) {
+        return showSnackBar(
+            context: context, content: 'Sending url prohivited');
+      }
+      setState(() {
+        _messages.insert(0, message);
+        _isTyping = true;
+      });
+      _controller.clear();
+      List<ChatModel> chatList = [];
+      chatList.addAll(await ApiService.sendMessage(
+          context: context, message: message.text));
+      for (var chat in chatList) {
+        insertNewData(chat.msg);
+      }
+    } catch (e) {
+      showSnackBar(context: context, content: e.toString());
+    }
   }
 
   void insertNewData(String response) {
-    print(response);
     ChatMessage botMessage = ChatMessage(
       text: response,
       sender: "bot",
@@ -109,6 +118,17 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   Widget buildTextComposer() {
     return Row(
       children: [
+        IconButton(
+          onPressed: () {
+            setState(() {
+              _messages.clear();
+            });
+          },
+          icon: const Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+        ),
         Expanded(
           child: TextField(
             controller: _controller,
@@ -125,12 +145,20 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
         ),
         IconButton(
           onPressed: () => _sendMessage(),
+          // onPressed: () async {
+          //   try {
+          //     await ApiService.sendMessage(
+          //         context: context, message: _controller.text);
+          //   } catch (e) {
+          //     showSnackBar(context: context, content: e.toString());
+          //   }
+          // },
           icon: const Icon(
             Icons.send,
             color: Colors.white,
           ),
         ),
       ],
-    ).px16();
+    ).px4();
   }
 }
