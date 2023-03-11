@@ -1,38 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:not_non/common/components/api_constant.dart';
-import 'package:not_non/model/apimodel.dart';
 import '../../../common/utils/utils.dart';
 import '../../../model/chatmodel.dart';
 
 class ApiService {
-  static Future<List<ApiModel>> getModels(BuildContext context) async {
-    try {
-      var response = await http.get(
-        Uri.parse('$Base_Url/models'),
-        headers: {'Authorization': 'Bearer $API_KEY'},
-      );
-      Map jsonResponse = jsonDecode(response.body);
-      if (jsonResponse['error'] != null) {
-        throw HttpException(jsonResponse['error']['message']);
-      }
-      // print('jsonResponse $jsonResponse');
-      List temp = [];
-      for (var value in jsonResponse['data']) {
-        temp.add(value);
-        // print("temp[$value]");
-      }
-      return ApiModel.modelsFromSnapshot(temp);
-    } catch (e) {
-      showSnackBar(context: context, content: e.toString());
-      rethrow;
-    }
-  }
-
   // send message
   static Future<List<ChatModel>> sendMessage(
       {required BuildContext context, required String message}) async {

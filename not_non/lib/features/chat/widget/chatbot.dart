@@ -1,12 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:not_non/common/utils/utils.dart';
 import 'package:not_non/features/chat/services/api_service.dart';
 import 'package:not_non/model/chatmodel.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 
 import '../../../common/utils/chatmessage.dart';
 import '../../../common/utils/url_check.dart';
@@ -134,7 +131,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
             controller: _controller,
             onSubmitted: (value) => _sendMessage(),
             decoration: const InputDecoration.collapsed(
-              hintText: 'Gain some knowledge',
+              hintText: 'Ask me anything..',
               hintStyle: TextStyle(color: Colors.white70),
             ),
             cursorColor: Colors.white,
@@ -145,14 +142,6 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
         ),
         IconButton(
           onPressed: () => _sendMessage(),
-          // onPressed: () async {
-          //   try {
-          //     await ApiService.sendMessage(
-          //         context: context, message: _controller.text);
-          //   } catch (e) {
-          //     showSnackBar(context: context, content: e.toString());
-          //   }
-          // },
           icon: const Icon(
             Icons.send,
             color: Colors.white,
