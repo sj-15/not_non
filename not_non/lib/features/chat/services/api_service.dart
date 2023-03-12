@@ -13,9 +13,9 @@ class ApiService {
       {required BuildContext context, required String message}) async {
     try {
       var response = await http.post(
-        Uri.parse('$Base_Url/chat/completions'),
+        Uri.parse('$baseUrl/chat/completions'),
         headers: {
-          'Authorization': 'Bearer $API_KEY',
+          'Authorization': 'Bearer $apiKey',
           'Content-Type': 'application/json'
         },
         body: jsonEncode(
